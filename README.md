@@ -26,7 +26,7 @@ This is a Spring Boot application for a lost and found system.  The administrato
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/projectray/Rabobank-techniacl-review.git
+   git clone https://github.com/projectray/rabobank-second-interview
 2. **Build application:**\
    Navigate to the project's root directory and run:
    ```bash
