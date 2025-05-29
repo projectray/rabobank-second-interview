@@ -10,6 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.util.ResourceUtils;
+
+import java.io.File;
+import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,8 +34,9 @@ class LostAndFoundControllerIT {
   @Test
   void claimItemSuccessTest() throws Exception {
     //setUp
-    String lostItems = "ItemName: Laptop\nQuantity: 1\nPlace: Taxi\nItemName: Headphones\nQuantity: 2\nPlace: Railway station\nItemName: Jewels\nQuantity: 4\nPlace: Airport\nItemName: Laptop\nQuantity: 1\nPlace: Airport";
-    MockMultipartFile mockFile = new MockMultipartFile("file", "lostItems.txt", "text/plain", lostItems.getBytes());
+    File file = ResourceUtils.getFile("classpath:lost_items.txt");
+    byte[] fileContent = Files.readAllBytes(file.toPath());
+    MockMultipartFile mockFile = new MockMultipartFile("file", "lost_items.txt", "text/plain", fileContent);
 
     mockMvc.perform(multipart("/api/admin/upload-items").file(mockFile)
         .with(httpBasic("admin", "password"))
@@ -56,8 +61,9 @@ class LostAndFoundControllerIT {
   @Test
   void claimItemFailedTest() throws Exception {
     //setUp
-    String lostItems = "ItemName: Laptop\nQuantity: 1\nPlace: Taxi\nItemName: Headphones\nQuantity: 2\nPlace: Railway station\nItemName: Jewels\nQuantity: 4\nPlace: Airport\nItemName: Laptop\nQuantity: 1\nPlace: Airport";
-    MockMultipartFile mockFile = new MockMultipartFile("file", "lostItems.txt", "text/plain", lostItems.getBytes());
+    File file = ResourceUtils.getFile("classpath:lost_items.txt");
+    byte[] fileContent = Files.readAllBytes(file.toPath());
+    MockMultipartFile mockFile = new MockMultipartFile("file", "lost_items.txt", "text/plain", fileContent);
 
     mockMvc.perform(multipart("/api/admin/upload-items").file(mockFile)
         .with(httpBasic("admin", "password"))
@@ -81,8 +87,9 @@ class LostAndFoundControllerIT {
 
   @Test
   void authenticationFailedTest() throws Exception {
-    String lostItems = "ItemName: Laptop\nQuantity: 1\nPlace: Taxi\nItemName: Headphones\nQuantity: 2\nPlace: Railway station\nItemName: Jewels\nQuantity: 4\nPlace: Airport\nItemName: Laptop\nQuantity: 1\nPlace: Airport";
-    MockMultipartFile mockFile = new MockMultipartFile("file", "lostItems.txt", "text/plain", lostItems.getBytes());
+    File file = ResourceUtils.getFile("classpath:lost_items.txt");
+    byte[] fileContent = Files.readAllBytes(file.toPath());
+    MockMultipartFile mockFile = new MockMultipartFile("file", "lost_items.txt", "text/plain", fileContent);
 
     mockMvc.perform(multipart("/api/admin/upload-items").file(mockFile)
         .contentType(MediaType.MULTIPART_FORM_DATA))
