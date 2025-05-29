@@ -34,7 +34,7 @@ This is a Spring Boot application for a lost and found system.  The administrato
 4. **Run Application:** \
    Navigate to the target directory and run:
    ```bash
-   java -jar lost_and_found-0.0.1-SNAPSHOT.jar
+   java -jar LostAndFound-0.0.1-SNAPSHOT.jar
 6. **Database:**\
    This application uses an in-memory H2 database.
 7. **Test:**\
