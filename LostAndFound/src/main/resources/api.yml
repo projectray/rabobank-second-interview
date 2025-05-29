@@ -11,6 +11,8 @@ paths:
   /admin/upload-items:
     post:
       summary: Upload lost items from a file
+      security:
+        - basicAuth: []
       requestBody:
         required: true
         content:
@@ -70,6 +72,8 @@ paths:
   /admin/check-claims:
     get:
       summary: Retrieve all claims
+      security:
+        - basicAuth: [ ]
       responses:
         '200':
           description: List of claims
@@ -83,6 +87,8 @@ paths:
   /admin/check-user-claims:
     get:
       summary: Retrieve all claims from a specific user
+      security:
+        - basicAuth: [ ]
       parameters:
         - in: path
           name: userId
@@ -103,6 +109,11 @@ paths:
 
 
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
   schemas:
     LostItem:
       type: object

@@ -6,6 +6,9 @@ import nl.rabobank.lostandfound.model.Claim;
 import nl.rabobank.lostandfound.model.LostItem;
 import nl.rabobank.lostandfound.repository.ClaimRepository;
 import nl.rabobank.lostandfound.repository.LostItemRepository;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +41,7 @@ public class LostAndFoundService {
     return lostItemRepository.findAll();
   }
 
+  @Retryable(retryFor = ObjectOptimisticLockingFailureException.class, maxAttempts = 3, backoff = @Backoff(delay = 2000))
   @Transactional
   public String claimItem(Long userId, Long itemId, int quantity) throws BadRequestException {
     LostItem item = lostItemRepository.findById(itemId).orElse(null);
@@ -47,7 +51,7 @@ public class LostAndFoundService {
         claim.setUserId(userId);
         claim.setClaimedQuantity(quantity);
         claim.setItemId(itemId);
-        item.setQuantity(item.getQuantity() - quantity);// update item quantity after claim
+        item.setQuantity(item.getQuantity() - quantity);
         claim.setUserName(userMockService.getUserName(userId));
         claimRepository.save(claim);
         return "Claim report successfully.";

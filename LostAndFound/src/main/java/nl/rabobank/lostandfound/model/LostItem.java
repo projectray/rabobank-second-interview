@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,9 @@ public class LostItem {
   private String itemName;
   private Integer quantity;
   private String place;
+
+  @Version
+  private Integer version;
 
   @OneToMany(mappedBy = "lostItem", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Claim> claims;
