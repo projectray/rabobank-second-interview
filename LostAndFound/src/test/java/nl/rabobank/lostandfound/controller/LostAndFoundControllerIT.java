@@ -2,12 +2,16 @@ package nl.rabobank.lostandfound.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.rabobank.lostandfound.model.Claim;
+import nl.rabobank.lostandfound.model.User;
+import nl.rabobank.lostandfound.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -32,6 +36,24 @@ class LostAndFoundControllerIT {
   private MockMvc mockMvc;
   @Autowired
   private ObjectMapper objectMapper;
+
+  @Autowired
+  private UserRepository userRepository;
+
+  @Autowired
+  private PasswordEncoder passwordEncoder;
+
+  @BeforeEach
+  void setUp() {
+    // Create a test user with admin role
+    if (userRepository.findByUsername("admin").isEmpty()) {
+      User user = new nl.rabobank.lostandfound.model.User();
+      user.setUsername("admin");
+      user.setPassword("password");
+      user.setRole("ADMIN");
+      userRepository.save(user);
+    }
+  }
 
   @Test
   void claimItemSuccessTest() throws Exception {
