@@ -20,7 +20,7 @@ public class ProdSecurityConfig {
 
   private final CustomUserDetailsService customUserDetailsService;
 
-  public DevSecurityConfig(CustomUserDetailsService customUserDetailsService) {
+  public ProdSecurityConfig(CustomUserDetailsService customUserDetailsService) {
     this.customUserDetailsService = customUserDetailsService;
   }
 
