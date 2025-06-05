@@ -47,14 +47,14 @@ public class DevSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http.csrf(AbstractHttpConfigurer::disable // Disable CSRF for simplicity in development
-      )
+    return http
       .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Allow H2 console access
       .authorizeHttpRequests(auth -> auth
         .requestMatchers("/h2-console/**").permitAll()
         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-        .anyRequest().authenticated())
+        .anyRequest().permitAll())
       .httpBasic(Customizer.withDefaults()) // Enable basic authentication
+      .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity in development
       .userDetailsService(customUserDetailsService) // Use RoleManagerService for user details
       .build();
   }

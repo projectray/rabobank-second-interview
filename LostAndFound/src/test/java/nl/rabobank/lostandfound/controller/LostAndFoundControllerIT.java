@@ -41,23 +41,21 @@ class LostAndFoundControllerIT {
   private UserRepository userRepository;
 
 
-//  @BeforeEach
-//  void setUp() {
-//    // Create a test user with admin role
-//    if (userRepository.findByUsername("admin").isEmpty()) {
-//      User user = new nl.rabobank.lostandfound.model.User();
-//      user.setUsername("admin");
-//      user.setPassword("password");
-//      user.setRole("ADMIN");
-//      userRepository.save(user);
-//    }
-//  }
+  @BeforeEach
+  void setUp() {
+    // Create a test user with admin role
+    if (userRepository.findByUsername("admin").isEmpty()) {
+      User admin = new User();
+      admin.setUsername("admin");
+      admin.setPassword("password"); // Noop password encoder for testing
+      admin.setRole("ROLE_ADMIN");
+      userRepository.save(admin);
+    }
+  }
 
   @Test
   void claimItemSuccessTest() throws Exception {
     //setUp
-    when(userRepository.findByUsername("admin")).thenReturn(
-      java.util.Optional.of(User.builder().id(1L).username("admin").password("password").role("ADMIN").build()));
     File file = ResourceUtils.getFile("classpath:lost_items.txt");
     byte[] fileContent = Files.readAllBytes(file.toPath());
     MockMultipartFile mockFile = new MockMultipartFile("file", "lost_items.txt", "text/plain", fileContent);
@@ -67,19 +65,19 @@ class LostAndFoundControllerIT {
         .contentType(MediaType.MULTIPART_FORM_DATA))
       .andExpect(status().isOk())
       .andReturn();
-//
-//    Claim claim = new Claim();
-//    claim.setUserId(1L);
-//    claim.setItemId(1L);
-//    claim.setClaimedQuantity(1);
-//
-//    String json = objectMapper.writeValueAsString(claim);
-//    MvcResult result = mockMvc.perform(post("/api/claim-item").content(json).contentType(MediaType.APPLICATION_JSON))
-//      .andExpect(status().isOk())
-//      .andReturn();
-//
-//    //Assert that the claim was successful
-//    assertEquals("Claim report successfully.", result.getResponse().getContentAsString());
+
+    Claim claim = new Claim();
+    claim.setUserId(1L);
+    claim.setItemId(1L);
+    claim.setClaimedQuantity(1);
+
+    String json = objectMapper.writeValueAsString(claim);
+    MvcResult result = mockMvc.perform(post("/api/claim-item").content(json).contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isOk())
+      .andReturn();
+
+    //Assert that the claim was successful
+    assertEquals("Claim report successfully.", result.getResponse().getContentAsString());
   }
 
   @Test
