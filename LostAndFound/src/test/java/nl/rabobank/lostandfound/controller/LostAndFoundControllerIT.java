@@ -48,7 +48,7 @@ class LostAndFoundControllerIT {
       User admin = new User();
       admin.setUsername("admin");
       admin.setPassword("password"); // Noop password encoder for testing
-      admin.setRole("ROLE_ADMIN");
+      admin.setRole("ADMIN");
       userRepository.save(admin);
     }
   }

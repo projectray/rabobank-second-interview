@@ -16,19 +16,20 @@ public class LostAndFoundApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LostAndFoundApplication.class, args);
 	}
-//
-//  @Bean
-//  CommandLineRunner init(UserRepository userRepository){
-//    return args -> {
-//      if(userRepository.count() == 0) {
-//        User admin = new User();
-//          admin.setId(1L);
-//          admin.setUsername("admin");
-//          admin.setPassword("{noop}password");
-//          admin.setRole("ADMIN");
-//        userRepository.save(admin);
-//      }
-//    };
-//  }
+
+
+  //Add test role in database when application starts
+  @Bean
+  CommandLineRunner init(UserRepository userRepository){
+    return args -> {
+      if(userRepository.count() == 0) {
+        User admin = new User();
+          admin.setUsername("admin");
+          admin.setPassword("password");
+          admin.setRole("ADMIN");
+        userRepository.save(admin);
+      }
+    };
+  }
 
 }

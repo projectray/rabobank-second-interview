@@ -30,7 +30,7 @@ public class ProdSecurityConfig {
       .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Allow H2 console access
       .authorizeHttpRequests(auth -> auth
         .requestMatchers("/h2-console/**").permitAll()
-        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
         .anyRequest().permitAll())
       .httpBasic(Customizer.withDefaults()) // Enable basic authentication
       .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity in development
