@@ -1,17 +1,16 @@
 package nl.rabobank.lostandfound.config;
 
+import nl.rabobank.lostandfound.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -19,25 +18,24 @@ import org.springframework.security.web.SecurityFilterChain;
 @Profile("prod")
 public class ProdSecurityConfig {
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http.authorizeHttpRequests(auth -> auth
-        .requestMatchers("/h2-console/**").permitAll()
-        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-        .anyRequest().permitAll())
-      .httpBasic(Customizer.withDefaults())
-      .csrf(Customizer.withDefaults())
-      .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-      .build();
+  private final CustomUserDetailsService customUserDetailsService;
+
+  public DevSecurityConfig(CustomUserDetailsService customUserDetailsService) {
+    this.customUserDetailsService = customUserDetailsService;
   }
 
   @Bean
-  public UserDetailsService userDetailsService() {
-    return new InMemoryUserDetailsManager(
-      User.withUsername("realAdmin")
-        .password(passwordEncoder().encode("realPassword"))
-        .roles("ADMIN")
-        .build());
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    return http
+      .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Allow H2 console access
+      .authorizeHttpRequests(auth -> auth
+        .requestMatchers("/h2-console/**").permitAll()
+        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+        .anyRequest().permitAll())
+      .httpBasic(Customizer.withDefaults()) // Enable basic authentication
+      .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity in development
+      .userDetailsService(customUserDetailsService) // Use RoleManagerService for user details
+      .build();
   }
 
   @Bean

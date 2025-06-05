@@ -18,27 +18,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Profile("dev")
 public class DevSecurityConfig {
 
-//  @Bean
-//  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//    return http.authorizeHttpRequests(auth -> auth
-//        .requestMatchers("/h2-console/**").permitAll()
-//        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-//        .anyRequest().permitAll())
-//      .httpBasic(Customizer.withDefaults())
-//      .csrf(AbstractHttpConfigurer::disable) // Disable CSRF to simplify testing and H2 console access
-//      .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Allow H2 console access
-//      .build();
-//  }
-//
-//  @Bean
-//  public UserDetailsService userDetailsService() {
-//    return new InMemoryUserDetailsManager(
-//      User.withUsername("admin")
-//        .password("{noop}password")
-//        .roles("ADMIN")
-//        .build());
-//  }
-
   private final CustomUserDetailsService customUserDetailsService;
 
   public DevSecurityConfig(CustomUserDetailsService customUserDetailsService) {
